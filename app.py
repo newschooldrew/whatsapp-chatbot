@@ -1,5 +1,6 @@
 from flask import Flask,request
 from twilio.rest import Client
+from marketstack import get_stock_price
 import os
 
 app = Flask(__name__)
@@ -20,6 +21,14 @@ def process_msg(msg):
     res = ""
     if msg == "hi":
         res = "Welcome to the stock market bot"
+        res = "Type sym:<stock_symbol> to ge the price of the stock"
+    elif 'sym:' in msg:
+        data = msg.split(":")
+        stock_symbol = data[1]
+        stock_price = get_stock_price(stock_symbol)
+        last_price = stock_price['last_price']
+        last_price_str = str(last_price)
+        res = "the stock price of " + stock_symbol + " is $" + last_price_str
     else:
         res = "please type hi to get started"
     return res
